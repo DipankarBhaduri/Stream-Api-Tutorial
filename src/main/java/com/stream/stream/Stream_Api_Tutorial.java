@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,14 +26,15 @@ public class Stream_Api_Tutorial {
      * @Map --> Line 172 - 178
      * Description: This operation maps the elements in the stream to a new value or structure.
      *
-     * @Collect --> Line 43 -
+     * @Collect --> Line 183 - 195
      * Description: This operation collects the elements in the stream into a collection, such as a List or Set.
      *
-     * @ForEach --> Line 49 -
+     * @ForEach --> Line 199 - 203
      * Description: This operation iterates over the elements in the stream and performs an action for each element.
      *
      * @Reduce --> Line 55 -
-     * Description: This operation combines the elements in the stream into a single result using a specified binary operation.
+     * Description: This operation combines the elements in the stream into a single result using a
+     *              specified binary operation.
      *
      * @Sort --> Line 61 -
      * Description: This operation sorts the elements in the stream based on a specified comparator.
@@ -158,7 +161,7 @@ public class Stream_Api_Tutorial {
      */
 
     @PostMapping("/filter")
-    public void filter () {
+    public void filter() {
         List<ApplicationUser> applicationUserList = applicationUserRepository.findAll();
         applicationUserList = applicationUserList.stream().filter(user -> user.getGender()
                 .equals("Male") && user.getAge() <= 18)
@@ -169,7 +172,7 @@ public class Stream_Api_Tutorial {
     }
 
     @PostMapping("/map")
-    public void map () {
+    public void map() {
         List<ApplicationUser> applicationUserList = applicationUserRepository.findAll();
         List<String> applicationUsers = applicationUserList.stream()
                 .filter(applicationUser -> applicationUser != null && StringUtils.isNotBlank(applicationUser.getName()))
@@ -178,11 +181,35 @@ public class Stream_Api_Tutorial {
     }
 
     @PostMapping("/collect")
-    public void collect () {
+    public void collect() {
         List<ApplicationUser> applicationUserList = applicationUserRepository.findAll();
         List<String> applicationUsersName= applicationUserList.stream()
                 .map(user -> user.getName()+" - "+user.getAge())
                 .toList();
 
+        HashSet<Integer> ages = (HashSet<Integer>) applicationUserList.stream()
+                .map(user -> user.getAge())
+                .collect(Collectors.toSet());
+
+        applicationUsersName.stream().forEach(System.out::println);
+        ages.stream().forEach(System.out::println);
+    }
+
+    @PostMapping("/foreach")
+    public void foreach() {
+        List<ApplicationUser> applicationUserList = applicationUserRepository.findAll();
+        applicationUserList.stream()
+                .forEach(applicationUser -> System.out.println(applicationUser.getGender()));
+    }
+
+    @PostMapping("/reduce")
+    public void reduce() {
+        List<ApplicationUser> applicationUserList = applicationUserRepository.findAll();
+        List<Integer> allAged = applicationUserList.stream()
+                .map(applicationUser -> applicationUser.getAge())
+                .collect(Collectors.toList());
+
+        int age = allAged.stream().reduce(0, (num1, num2) -> num1+num2);
+        System.out.println(age);
     }
 }
