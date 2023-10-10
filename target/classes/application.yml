@@ -1,0 +1,7 @@
+spring:
+  data:
+    mongodb:
+      #      uri: "mongodb+srv://dipankarbhaduri8:<password>@cluster0.tnvgzpi.mongodb.net/?retryWrites=true&w=majority" // from mongoDB cluster
+      uri: "mongodb+srv://dipankarbhaduri8:dipankarbhaduri8@cluster0.tnvgzpi.mongodb.net/book-sharing-platform?retryWrites=true&w=majority"
+      connection-pool-size: 10
+      socket-timeout: 2000
