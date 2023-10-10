@@ -20,7 +20,7 @@ We welcome contributions to improve this tutorial. Fork the repository, make cha
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License. See the [LICENSE] file for details.
 
 Happy learning!
 
