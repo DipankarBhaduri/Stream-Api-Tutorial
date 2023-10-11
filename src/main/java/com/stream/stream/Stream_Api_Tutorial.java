@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/rest")
@@ -32,23 +33,23 @@ public class Stream_Api_Tutorial {
      * @ForEach --> Line 199 - 203
      * Description: This operation iterates over the elements in the stream and performs an action for each element.
      *
-     * @Reduce --> Line 55 -
+     * @Reduce --> Line 206 - 214
      * Description: This operation combines the elements in the stream into a single result using a
      *              specified binary operation.
      *
-     * @Sort --> Line 61 -
+     * @Sort --> Line 217 - 222
      * Description: This operation sorts the elements in the stream based on a specified comparator.
      *
-     * @Distinct --> Line 67 -
+     * @Distinct --> Line 225 - 230
      * Description: This operation removes duplicate elements from the stream.
      *
-     * @Limit --> Line 73 -
+     * @Limit --> Line 233 - 238
      * Description: This operation limits the number of elements in the stream to a specified maximum.
      *
-     * @Skip --> Line 79 -
+     * @Skip --> Line 242 - 247
      * Description: This operation skips the first N elements in the stream and returns the rest.
      *
-     * @FlatMap --> Line 85 -
+     * @FlatMap --> Line 250 - 276
      * Description: This operation maps each element in the stream to multiple values and flattens them into a single stream.
      *
      * @AnyMatch --> Line 91 -
@@ -212,4 +213,90 @@ public class Stream_Api_Tutorial {
         int age = allAged.stream().reduce(0, (num1, num2) -> num1+num2);
         System.out.println(age);
     }
+
+    @PostMapping("/sort")
+    public void sort() {
+        List<ApplicationUser> applicationUserList = applicationUserRepository.findAll();
+        List<Integer> allAge = applicationUserList.stream()
+                .map(ApplicationUser::getAge).sorted().toList();
+        allAge.stream().forEach(System.out::println);
+    }
+
+    @PostMapping("/distinct")
+    public void distinct() {
+        List<ApplicationUser> applicationUserList = applicationUserRepository.findAll();
+        List<Integer> allAge = applicationUserList.stream()
+                .map(ApplicationUser::getAge).distinct().sorted().toList();
+        allAge.stream().forEach(System.out::println);
+    }
+
+    @PostMapping("/limit")
+    public void limit() {
+        List<ApplicationUser> applicationUserList = applicationUserRepository.findAll();
+        List<Integer> allAge = applicationUserList.stream()
+                .map(ApplicationUser::getAge).distinct().sorted().limit(10).toList();
+        allAge.stream().forEach(System.out::println);
+    }
+
+
+    @PostMapping("/skip")
+    public void skip() {
+        List<ApplicationUser> applicationUserList = applicationUserRepository.findAll();
+        List<Integer> allAge = applicationUserList.stream()
+                .map(ApplicationUser::getAge).distinct().sorted().skip(25).toList();
+        allAge.stream().forEach(System.out::println);
+    }
+
+    @PostMapping("/flatmap")
+    public void flatmap() {
+        List<ApplicationUser> applicationUserList = applicationUserRepository.findAll();
+        applicationUserList.stream().forEach( applicationUser -> {
+            if(applicationUser.getContactNumber() != null && applicationUser.getContactNumber().size() == 1) {
+                int num = (int) (Math.random() * 10);
+                while (num != 0) {
+                    int index = 0;
+                    String number = "";
+                    while(index != 10) {
+                        number += (int)(Math.random() * 10);
+                        index++;
+                    }
+                    num--;
+                    applicationUser.getContactNumber().add(number);
+                }
+            }
+        });
+        applicationUserList.stream().forEach(applicationUser -> {
+            applicationUserRepository.save(applicationUser);
+        });
+
+        List<String> phoneNumberList = applicationUserList.stream()
+                .flatMap(applicationUser -> applicationUser.getContactNumber().stream())
+                .collect(Collectors.toList());
+
+        phoneNumberList.stream().forEach(System.out::println);
+    }
+
+    @PostMapping("/anymatch")
+    public void anymatch() {
+        List<ApplicationUser> applicationUserList = applicationUserRepository.findAll();
+        applicationUserList.stream()
+                .filter(applicationUser -> applicationUser.getContactNumber() != null && !applicationUser.getContactNumber().isEmpty())
+                .forEach(applicationUser -> {
+                    applicationUser.getContactNumber().stream().forEach(mobileNumber -> {
+                        int count = Stream.of(mobileNumber.toCharArray())
+                                .filter(character -> ((int)(character - '0')) % 2 == 0)
+                                .count() > 0;
+                        if(count > 0) System.out.println(mobileNumber);
+                    });
+                });
+    }
 }
+
+/*
+ * @AnyMatch --> Line 91 -
+ * Description: This operation checks if any elements in the stream match a given condition and returns a boolean result.
+ *
+ * @AllMatch --> Line 97 -
+ * Description: This operation checks if all elements in the stream match a given condition and returns a boolean result.
+ *
+ */
