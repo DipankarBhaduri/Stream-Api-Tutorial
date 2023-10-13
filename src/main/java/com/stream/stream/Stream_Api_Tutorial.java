@@ -347,79 +347,26 @@ public class Stream_Api_Tutorial {
         String concatination = appUsersName.stream().collect(Collectors.joining(", "));
         System.out.println("Concatenated Name : "+concatination);
     }
+
+    /**
+     * @Count -->
+     * Description: This operation counts the number of elements in the stream and returns the count as a long value.
+     */
+    @PostMapping("/count")
+    public void count() {
+        List<ApplicationUser> applicationUserList = applicationUserRepository.findAll();
+        int count = (int) applicationUserList.stream().filter(applicationUser -> applicationUser.getAge() >= 60).count();
+        System.out.println(count);
+    }
+
+    /**
+     * @Reverse -->
+     * Description: This operation reverses the order of elements in the stream.
+     */
+    @PostMapping("/reverse")
+    public void reverse() {
+        List<ApplicationUser> applicationUserList = applicationUserRepository.findAll();
+        List<Integer> ageList = applicationUserList.stream().map(ApplicationUser::getAge).sorted(Collections.reverseOrder()).collect(Collectors.toList());
+        ageList.stream().forEach(System.out::println);
+    }
 }
-
-
-/**
- * @Peek --> Line 163 -
- * Description: This operation performs a side effect for each element in the stream and returns the same stream.
- *
- * @Count --> Line 169 -
- * Description: This operation counts the number of elements in the stream and returns the count as a long value.
- *
- * @MapToInt --> Line 175 -
- * Description: This operation maps elements to primitive integers and returns an IntStream.
- *
- * @MapToDouble --> Line 181 -
- * Description: This operation maps elements to primitive doubles and returns a DoubleStream.
- *
- * @MapToLong --> Line 187 -
- * Description: This operation maps elements to primitive longs and returns a LongStream.
- *
- * @Peek --> Line 193 -
- * Description: This operation performs a side effect for each element in the stream and returns the same stream.
- *
- * @Limit --> Line 199 -
- * Description: This operation limits the number of elements in the stream to a specified maximum.
- *
- * @Skip --> Line 205 -
- * Description: This operation skips the first N elements in the stream and returns the rest.
- *
- * @ParallelStream --> Line 211 -
- * Description: This operation converts a sequential stream into a parallel stream for parallel processing.
- *
- * @Concat --> Line 217 -
- * Description: This operation concatenates two streams into one stream.
- *
- * @Zip --> Line 223 -
- * Description: This operation combines two streams element-wise using a specified function.
- *
- * @Unmodifiable --> Line 229 -
- * Description: This operation wraps a stream to make it unmodifiable, preventing further modification.
- *
- * @Reverse --> Line 235 -
- * Description: This operation reverses the order of elements in the stream.
- *
- * @TakeWhile --> Line 241 -
- * Description: This operation takes elements from the start of the stream while a condition is met.
- *
- * @DropWhile --> Line 247 -
- * Description: This operation skips elements from the start of the stream while a condition is met.
- *
- * @DistinctByKey --> Line 253 -
- * Description: This operation removes duplicate elements from the stream based on a key extractor function.
- *
- * @ToMap --> Line 259 -
- * Description: This operation converts the elements in the stream into a map using key and value mapping functions.
- *
- * @ToSet --> Line 265 -
- * Description: This operation converts the elements in the stream into a set.
- *
- * @ToCollection --> Line 271 -
- * Description: This operation converts the elements in the stream into a specified collection.
- *
- * @ToPrimitiveArray --> Line 277 -
- * Description: This operation converts the elements in the stream to a primitive array.
- *
- * @GroupingAndCounting --> Line 283 -
- * Description: This operation groups elements in the stream and counts occurrences of each group.
- *
- * @FilterNulls --> Line 289 -
- * Description: This operation filters out null elements from the stream.
- *
- * @DistinctByProperty --> Line 295 -
- * Description: This operation removes duplicate elements from the stream based on a specific property.
- *
- * @ToMultimap --> Line 301 -
- * Description: This operation converts the elements in the stream into a multimap.
- */
